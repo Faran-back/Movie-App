@@ -23,6 +23,9 @@ class MovieController extends Controller
     }
 
     public function store(Request $request){
+
+        try{
+
         $data = $request->validate([
             'title' => 'required',
             'description' => 'required',
@@ -31,9 +34,23 @@ class MovieController extends Controller
             'cover_photo' => 'required'
         ]);
 
-        Movie::create($data);
+        $movie = Movie::create($data);
 
-        return redirect()->route('movies')->with('success', 'Movie added successfully');
+        // return redirect()->route('movies')->with('success', 'Movie added successfully');
+        return response()->json([
+            'status' => '200',
+            'success' => 'Movie added successfully',
+            'movie' => $movie,
+            'redirect_url' => route('movies')
+        ]);
+
+
+        }catch(\Exception $e){
+            return response()->json([
+                'status' => '500',
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     public function update(Request $request, $id){

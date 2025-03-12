@@ -1,3 +1,4 @@
+<x-app-layout>
 <x-slot name="header">
     <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
         {{ __('Add Movie') }}
@@ -31,7 +32,7 @@
 
             <div class="p-6 text-gray-900 dark:text-gray-100">
                 <x-input-label for="cover_photo" value="Cover Photo*" />
-                <x-text-input id="cover_photo" name="cover_photo" class="mt-1 block w-full" />
+                <x-text-input type="file" id="cover_photo" name="cover_photo" class="mt-1 block w-full"/>
             </div>
 
             <div class="p-6 text-gray-900 dark:text-gray-100 flex justify-start">

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class TvShowController extends Controller
 {
     public function index(){
-        $movies = TvShow::all();
+        $tvshows = TvShow::all();
         return view('tvshows.index', compact('tvshows'));
     }
 
