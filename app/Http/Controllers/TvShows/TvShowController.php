@@ -4,6 +4,7 @@ namespace App\Http\Controllers\TvShows;
 
 use App\Http\Controllers\Controller;
 use App\Models\TvShow;
+use Exception;
 use Illuminate\Http\Request;
 
 class TvShowController extends Controller
@@ -23,39 +24,88 @@ class TvShowController extends Controller
     }
 
     public function store(Request $request){
-        $data = $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'rating' => 'required',
-            'genre' => 'required',
-            'cover_photo' => 'required'
-        ]);
 
-        TvShow::create($data);
+        try{
 
-        return redirect()->route('movies')->with('success', 'TvShow added successfully');
+            $request->validate([
+                'title' => 'required',
+                'description' => 'required',
+                'rating' => 'required',
+                'genre' => 'required',
+                'cover_photo' => 'required'
+            ]);
+
+            if($request->hasFile('cover_photo')){
+
+                $file = $request->cover_photo;
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('movies', $filename, 'public');
+
+                TvShow::create([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'rating' => $request->rating,
+                    'genre' => $request->genre,
+                    'cover_photo' => $filename
+                ]);
+
+                return redirect()->route('movies')->with('success', 'TvShow added successfully');
+
+            }
+
+        }catch(Exception $error){
+            return response()->json([
+                'status' => 500,
+                'message' => $error->getMessage(),
+            ]);
+        }
+
     }
 
     public function update(Request $request, $id){
-        $data = $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'rating' => 'required',
-            'genre' => 'required',
-            'cover_photo' => 'required'
-        ]);
 
-        $tvShow = TvShow::findOrFail($id);
-        $tvShow->update($data);
+        try{
 
-        return redirect()->route('movies')->with('success', 'TvShow updated successfully');
+            $tvShow = TvShow::findOrFail($id);
+
+            $request->validate([
+                'title' => 'required',
+                'description' => 'required',
+                'rating' => 'required',
+                'genre' => 'required',
+                'cover_photo' => 'required'
+            ]);
+
+            if($request->hasFile('cover_photo')){
+                $file = $request->cover_photo;
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('tvshows', $filename, 'public');
+
+                $tvShow->update([
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'rating' => $request->rating,
+                    'genre' => $request->genre,
+                    'cover_photo' => $filename
+                ]);
+
+                return redirect()->route('tv.shows')->with('success', 'TvShow updated successfully');
+            }
+
+        }catch(Exception $error){
+            return response()->json([
+                'status' => 500,
+                'message' => $error->getMessage(),
+            ]);
+        }
+
     }
 
     public function destroy($id){
         $tvShow = TvShow::findOrFail($id);
         $tvShow->delete();
 
-        return redirect()->route('movies')->with('success', 'Movie deleted successfully');
+        return redirect()->route('tv.shows')->with('success', 'TvShow deleted successfully');
     }
 }
 

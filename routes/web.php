@@ -26,10 +26,11 @@ Route::middleware('auth')->group(function () {
  */
 
 Route::get('/movies', [MovieController::class, 'index'])->name('movies');
-Route::get('/create', [MovieController::class, 'create'])->name('create.movie');
-Route::post('/store', [MovieController::class, 'store'])->name('store.movie');
-Route::get('/edit/{id}', [MovieController::class, 'edit'])->name('edit.movie');
-Route::get('/update/{id}', [MovieController::class, 'update'])->name('update.movie');
+Route::get('/new-movie', [MovieController::class, 'create'])->name('create.movie');
+Route::post('/new-movie', [MovieController::class, 'store'])->name('store.movie');
+Route::get('/edit-movie/{id}', [MovieController::class, 'edit'])->name('edit.movie');
+Route::put('/update-movie/{id}', [MovieController::class, 'update'])->name('update.movie');
+Route::delete('/delete-movie/{id}', [MovieController::class, 'destroy'])->name('destroy.movie');
 
 /**
  *
@@ -37,7 +38,12 @@ Route::get('/update/{id}', [MovieController::class, 'update'])->name('update.mov
  *
  */
 
-Route::get('tv-shows', [TvShowController::class, 'index'])->name('tv.shows');
+Route::get('/tv-shows', [TvShowController::class, 'index'])->name('tv.shows');
+Route::get('/new-tvshow', [TvShowController::class, 'create'])->name('create.tvshow');
+Route::post('/new-tvshow', [TvShowController::class, 'store'])->name('store.tvshow');
+Route::get('/edit-tvshow/{id}', [TvShowController::class, 'edit'])->name('edit.tvshow');
+Route::put('/update-tvshow/{id}', [TvShowController::class, 'update'])->name('update.tvshow');
+Route::put('/delete-tvshow/{id}', [TvShowController::class, 'destroy'])->name('destroy.tvshow');
 
 
 

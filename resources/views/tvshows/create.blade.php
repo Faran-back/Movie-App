@@ -5,7 +5,7 @@
 </x-slot>
 
 <div class="py-12">
-    <form id="deviceForm" action="{{ route('store.tvshow') }}" method="POST">
+    <form id="deviceForm" action="{{ route('store.tvshow') }}" method="POST" enctype="multipart/form-data">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @csrf
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -35,7 +35,7 @@
             </div>
 
             <div class="p-6 text-gray-900 dark:text-gray-100 flex justify-start">
-                    <x-primary-button class="mt-4">Add TvShow</x-primary-button>
+                    <x-primary-button type="submit" class="mt-4">Add TvShow</x-primary-button>
             </div>
         </div>
     </div>
