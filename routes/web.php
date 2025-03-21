@@ -1,7 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Home\HomeController;
 use App\Http\Controllers\Movies\MovieController;
 use App\Http\Controllers\TvShows\TvShowController;
 
@@ -9,9 +11,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/home', function () {
-    return view('home');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/home', [HomeController::class, 'index'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -25,7 +26,7 @@ Route::middleware('auth')->group(function () {
  *
  */
 
-Route::get('/movies', [MovieController::class, 'index'])->name('movies');
+Route::get('all-movies', [MovieController::class, 'index'])->name('movies');
 Route::get('/new-movie', [MovieController::class, 'create'])->name('create.movie');
 Route::post('/new-movie', [MovieController::class, 'store'])->name('store.movie');
 Route::get('/edit-movie/{id}', [MovieController::class, 'edit'])->name('edit.movie');

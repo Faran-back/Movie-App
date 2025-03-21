@@ -5,12 +5,24 @@ namespace App\Http\Controllers\TvShows;
 use App\Http\Controllers\Controller;
 use App\Models\TvShow;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class TvShowController extends Controller
 {
     public function index(){
-        $tvshows = TvShow::all();
+        $client = new Client(['verify' => false]);
+        $token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjI3ZmI3YzIyZWVkMDJlNWNiOGUzMzQwYzIxN2M1OSIsIm5iZiI6MTc0MTg1MDQyMC45NDcsInN1YiI6IjY3ZDI4NzM0NjY4OTJiYWQ2MjgxYTJhZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KLgZFHCxpgYK2QuUTZ9YUsbb8ufH5HwamIoAmrgLL3E';
+
+        $response = $client->request('GET', 'https://api.themoviedb.org/3/discover/tv?include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+                'accept' => 'application/json'
+            ]
+        ]);
+
+        $tvshows = json_decode($response->getBody(), true);
+
         return view('tvshows.index', compact('tvshows'));
     }
 

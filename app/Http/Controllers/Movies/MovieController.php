@@ -5,12 +5,26 @@ namespace App\Http\Controllers\Movies;
 use App\Http\Controllers\Controller;
 use App\Models\Movie;
 use Exception;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
     public function index(){
-        $movies = Movie::all();
+
+        $client = new Client(['verify' => false]);
+
+        $token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjI3ZmI3YzIyZWVkMDJlNWNiOGUzMzQwYzIxN2M1OSIsIm5iZiI6MTc0MTg1MDQyMC45NDcsInN1YiI6IjY3ZDI4NzM0NjY4OTJiYWQ2MjgxYTJhZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KLgZFHCxpgYK2QuUTZ9YUsbb8ufH5HwamIoAmrgLL3E';
+
+        $discover_response = $client->request('GET', 'https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc', [
+            'headers' => [
+              'Authorization' => 'Bearer ' . $token,
+              'accept' => 'application/json',
+            ],
+          ]);
+
+        $movies = json_decode($discover_response->getBody(), true);
+
         return view('movies.index', compact('movies'));
     }
 
@@ -49,12 +63,7 @@ class MovieController extends Controller
                     'cover_photo' => $filename
                 ]);
 
-                return response()->json([
-                    'status' => '200',
-                    'success' => 'Movie added successfully',
-                    'movie' => $movie,
-                    'redirect_url' => route('movies')
-                ]);
+               return redirect()->route('movies')->with('success', 'Movie Added Successfully');
             }
 
             return response()->json([
