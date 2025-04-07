@@ -13,6 +13,8 @@ Route::get('/', function () {
 
 
 Route::get('/home', [HomeController::class, 'index'])->name('dashboard');
+Route::get('home-movie-show/{id}', [HomeController::class, 'show'])->name('home.movie.show');
+Route::get('home-tv-show/{id}', [HomeController::class, 'tv_show'])->name('home.tv.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -32,6 +34,7 @@ Route::post('/new-movie', [MovieController::class, 'store'])->name('store.movie'
 Route::get('/edit-movie/{id}', [MovieController::class, 'edit'])->name('edit.movie');
 Route::put('/update-movie/{id}', [MovieController::class, 'update'])->name('update.movie');
 Route::delete('/delete-movie/{id}', [MovieController::class, 'destroy'])->name('destroy.movie');
+Route::get('movie-show/{id}', [MovieController::class, 'show'])->name('movie.show');
 
 /**
  *

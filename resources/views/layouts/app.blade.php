@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <link rel="icon" type="image/png" href="{{ asset('images/Black_Grey_Minimalist_Modern_Cinema_Logo-removebg-preview (1).png') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -28,7 +29,7 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main class="bg-black">
                 {{ $slot }}
             </main>
         </div>
