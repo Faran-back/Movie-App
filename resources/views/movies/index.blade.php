@@ -14,6 +14,7 @@
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         <!-- Movie Card (Reusable) -->
                         @foreach ($movies['results'] as $movie)
+                        <a href="{{ route('movie.show', $movie['id']) }}">
                             <div class="relative group bg-gray-800 rounded-lg overflow-hidden shadow-lg">
                                 <img src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}"
                                      alt="{{ $movie['title'] }}"
@@ -23,6 +24,7 @@
                                 </div>
                             </div>
                         @endforeach
+                    </a>
                     </div>
                 </div>
             </div>

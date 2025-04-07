@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\Movies;
 
 use App\Http\Controllers\Controller;
-use App\Models\Movie;
-use Exception;
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
 
 class MovieController extends Controller
 {
@@ -28,104 +25,61 @@ class MovieController extends Controller
         return view('movies.index', compact('movies'));
     }
 
-    public function edit($id){
-        $movie = Movie::findOrFail($id);
-        return view('movies.edit', compact('movie'));
-    }
+    public function show($id){
 
-    public function create(){
-        return view('movies.create');
-    }
+        $access_key = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjI3ZmI3YzIyZWVkMDJlNWNiOGUzMzQwYzIxN2M1OSIsIm5iZiI6MTc0MTg1MDQyMC45NDcsInN1YiI6IjY3ZDI4NzM0NjY4OTJiYWQ2MjgxYTJhZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KLgZFHCxpgYK2QuUTZ9YUsbb8ufH5HwamIoAmrgLL3E';
 
-    public function store(Request $request)
-    {
-        try {
+        $client = new Client(['verify' => false]);
 
-            $request->validate([
-                'title' => 'required',
-                'description' => 'required',
-                'rating' => 'required',
-                'genre' => 'required',
-                'cover_photo' => 'required|file|image|mimes:jpg,png,jpeg,gif,svg|max:2048'
-            ]);
-
-
-            if ($request->hasFile('cover_photo')) {
-                $file = $request->file('cover_photo');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $file->storeAs('movies', $filename, 'public');
-
-                $movie = Movie::create([
-                    'title' => $request->title,
-                    'description' => $request->description,
-                    'rating' => $request->rating,
-                    'genre' => $request->genre,
-                    'cover_photo' => $filename
-                ]);
-
-               return redirect()->route('movies')->with('success', 'Movie Added Successfully');
-            }
-
-            return response()->json([
-                'status' => '400',
-                'error' => 'Cover photo is required'
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => '500',
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
-
-
-    public function update(Request $request, $id){
-
-        try{
-
-        $data = $request->validate([
-            'title' => 'required',
-            'description' => 'required',
-            'rating' => 'required',
-            'genre' => 'required',
-            'cover_photo' => 'required|file|image|mimes:png,jpg,jpeg,gif,svg|max:2048'
+        $response = $client->request('GET', "https://api.themoviedb.org/3/movie/{$id}", [
+            'headers' => [
+                'Authorization' => 'Bearer '. $access_key,
+                'accept' => 'application/json'
+            ],
         ]);
 
-        $movie = Movie::findOrFail($id);
+        $data = json_decode($response->getBody(), true);
 
-        if($request->has('cover_photo')){
-            $file = $request->cover_photo;
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('movies', $filename, 'public');
+        $certain_res = $client->request('GET', "https://api.themoviedb.org/3/find/{$data['imdb_id']}?external_source=imdb_id", [
+            'headers' => [
+              'Authorization' => 'Bearer ' . $access_key,
+              'accept' => 'application/json',
+            ],
+          ]);
 
+        $movies = json_decode($certain_res->getBody(), true);
 
-        $movie->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'rating' => $request->rating,
-            'genre' => $request->genre,
-            'cover_photo' => $filename
+        $movie = $movies['movie_results'];
+
+        // Related Movies
+
+        $related_response = $client->request('GET', 'https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc', [
+            'headers' => [
+                'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjI3ZmI3YzIyZWVkMDJlNWNiOGUzMzQwYzIxN2M1OSIsIm5iZiI6MTc0MTg1MDQyMC45NDcsInN1YiI6IjY3ZDI4NzM0NjY4OTJiYWQ2MjgxYTJhZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KLgZFHCxpgYK2QuUTZ9YUsbb8ufH5HwamIoAmrgLL3E',
+                'accept' => 'application/json',
+            ],
         ]);
 
-        return redirect()->route('movies')->with('success', 'Movie updated successfully');
+        $related_response_json = json_decode($related_response->getBody(), true);
 
-    }
+        $related_movies = $related_response_json['results'];
 
-    }catch(Exception $e){
-        return response()->json([
-            'status' => 500,
-            'message' => $e->getMessage()
-        ]);
-    }
 
-    }
+        $trailer_response = $client->request('GET', "https://api.themoviedb.org/3/movie/{$id}/videos", [
+            'headers' => [
+              'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjI3ZmI3YzIyZWVkMDJlNWNiOGUzMzQwYzIxN2M1OSIsIm5iZiI6MTc0MTg1MDQyMC45NDcsInN1YiI6IjY3ZDI4NzM0NjY4OTJiYWQ2MjgxYTJhZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KLgZFHCxpgYK2QuUTZ9YUsbb8ufH5HwamIoAmrgLL3E',
+              'accept' => 'application/json',
+            ],
+          ]);
 
-    public function destroy($id){
-        $movie = Movie::findOrFail($id);
-        $movie->delete();
+        $trailer_response_json = json_decode($trailer_response->getBody(), true);
 
-        return redirect()->route('movies')->with('success', 'Movie deleted successfully');
+        $trailers = $trailer_response_json['results'];
+
+        $trailer = $trailers[0];
+
+
+        return view('movies.show', compact(['movie', 'related_movies', 'trailer']));
     }
 }
 

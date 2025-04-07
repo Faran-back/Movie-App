@@ -29,12 +29,15 @@ Route::middleware('auth')->group(function () {
  */
 
 Route::get('all-movies', [MovieController::class, 'index'])->name('movies');
-Route::get('/new-movie', [MovieController::class, 'create'])->name('create.movie');
-Route::post('/new-movie', [MovieController::class, 'store'])->name('store.movie');
-Route::get('/edit-movie/{id}', [MovieController::class, 'edit'])->name('edit.movie');
-Route::put('/update-movie/{id}', [MovieController::class, 'update'])->name('update.movie');
-Route::delete('/delete-movie/{id}', [MovieController::class, 'destroy'])->name('destroy.movie');
 Route::get('movie-show/{id}', [MovieController::class, 'show'])->name('movie.show');
+
+/**
+ * Route::get('/new-movie', [MovieController::class, 'create'])->name('create.movie');
+* Route::post('/new-movie', [MovieController::class, 'store'])->name('store.movie');
+* Route::get('/edit-movie/{id}', [MovieController::class, 'edit'])->name('edit.movie');
+* Route::put('/update-movie/{id}', [MovieController::class, 'update'])->name('update.movie');
+* Route::delete('/delete-movie/{id}', [MovieController::class, 'destroy'])->name('destroy.movie');
+ */
 
 /**
  *

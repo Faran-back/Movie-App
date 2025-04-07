@@ -20,8 +20,8 @@
                     <p class="text-gray-300 text-sm mt-2">
                         {{ $featured_movie['overview'] }}
                     </p>
-                    <a href="https://www.youtube.com/watch?v={{  }}" class="inline-block mt-3 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                        Watch Now
+                    <a href="https://www.youtube.com/watch?v={{ $trailer['key'] }}" target="blank" class="inline-block mt-3 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        Watch Trailer
                     </a>
                 </div>
             </div>
@@ -29,6 +29,7 @@
             <!-- Movie Grid (Small Cards) -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 @foreach ($movies as $movie)
+                <a href="{{ route('home.movie.show', $movie['id']) }}">
                     <div class="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group">
                         <img src="https://image.tmdb.org/t/p/w500{{ $movie['poster_path'] }}"
                              alt="{{ $movie['title'] }}"
@@ -43,8 +44,9 @@
                             </p>
                         </div>
                     </div>
-                @endforeach
-            </div>
+                    @endforeach
+                </div>
+            </a>
 
             <!-- Section for Top TV Shows -->
             <section class="mt-8">

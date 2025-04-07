@@ -52,9 +52,25 @@ class HomeController extends Controller
 
     $tvshows = json_decode($tv_response->getBody(), true);
 
-     dump($featured_movie);
 
-    return view('home', compact(['movies', 'featured_movie', 'now_playing_content', 'tvshows']));
+    // Featured Movie Trailer
+
+    $trailer_response = $client->request('GET', "https://api.themoviedb.org/3/movie/{$featured_movie['id']}/videos", [
+        'headers' => [
+          'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjI3ZmI3YzIyZWVkMDJlNWNiOGUzMzQwYzIxN2M1OSIsIm5iZiI6MTc0MTg1MDQyMC45NDcsInN1YiI6IjY3ZDI4NzM0NjY4OTJiYWQ2MjgxYTJhZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KLgZFHCxpgYK2QuUTZ9YUsbb8ufH5HwamIoAmrgLL3E',
+          'accept' => 'application/json',
+        ],
+      ]);
+
+    $trailer_response_json = json_decode($trailer_response->getBody(), true);
+
+    $trailers = $trailer_response_json['results'];
+
+    $trailer = $trailers[0];
+
+    // dump($trailer);
+
+    return view('home', compact(['movies', 'featured_movie', 'now_playing_content', 'tvshows', 'trailer']));
 }
 
 
@@ -108,7 +124,7 @@ class HomeController extends Controller
 
         $trailer = $trailers[0];
 
-        // dd($trailer);
+        // dump($trailer);
 
         return view('movies.show', compact(['movie', 'related_movies', 'trailer']));
 

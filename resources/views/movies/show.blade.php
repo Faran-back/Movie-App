@@ -56,7 +56,7 @@
                     <h2 class="text-2xl font-semibold mb-4 text-white">🎥 More Like This</h2>
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         @foreach ($related_movies as $m)
-                            <a href="{{ route('movie.show', $m['id']) }}"
+                            <a href="{{ route('home.movie.show', $m['id']) }}"
                                class="relative group bg-gray-800 rounded-lg overflow-hidden shadow-lg">
                                 <img src="https://image.tmdb.org/t/p/w500{{ $m['poster_path'] }}"
                                      alt="{{ $m['title'] }}"
