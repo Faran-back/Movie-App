@@ -68,9 +68,34 @@ class HomeController extends Controller
 
     $trailer = $trailers[0];
 
+
+    $top_rated_response = $client->request('GET', 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', [
+        'headers' => [
+          'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjI3ZmI3YzIyZWVkMDJlNWNiOGUzMzQwYzIxN2M1OSIsIm5iZiI6MTc0MTg1MDQyMC45NDcsInN1YiI6IjY3ZDI4NzM0NjY4OTJiYWQ2MjgxYTJhZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KLgZFHCxpgYK2QuUTZ9YUsbb8ufH5HwamIoAmrgLL3E',
+          'accept' => 'application/json',
+        ],
+    ]);
+
+    $top_rated = json_decode($top_rated_response->getBody(), true);
+
+    $top = $top_rated['results'];
+
+    // UpComing Movies
+
+    $upComing_response = $client->request('GET', 'https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1', [
+        'headers' => [
+          'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjI3ZmI3YzIyZWVkMDJlNWNiOGUzMzQwYzIxN2M1OSIsIm5iZiI6MTc0MTg1MDQyMC45NDcsInN1YiI6IjY3ZDI4NzM0NjY4OTJiYWQ2MjgxYTJhZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KLgZFHCxpgYK2QuUTZ9YUsbb8ufH5HwamIoAmrgLL3E',
+          'accept' => 'application/json',
+        ],
+      ]);
+
+    $upComing = json_decode($upComing_response->getBody(), true);
+
+    $up = $upComing['results'];
+
     // dump($trailer);
 
-    return view('home', compact(['movies', 'featured_movie', 'now_playing_content', 'tvshows', 'trailer']));
+    return view('home', compact(['movies', 'featured_movie', 'now_playing_content', 'tvshows', 'trailer', 'top', 'up']));
 }
 
 
@@ -128,5 +153,24 @@ class HomeController extends Controller
 
         return view('movies.show', compact(['movie', 'related_movies', 'trailer']));
 
+    }
+
+
+    public function tv_show($id){
+
+        $client = new Client(['verify' => false]);
+
+         $response = $client->request('GET', "https://api.themoviedb.org/3/tv/{$id}", [
+            'headers' => [
+              'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZjI3ZmI3YzIyZWVkMDJlNWNiOGUzMzQwYzIxN2M1OSIsIm5iZiI6MTc0MTg1MDQyMC45NDcsInN1YiI6IjY3ZDI4NzM0NjY4OTJiYWQ2MjgxYTJhZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.KLgZFHCxpgYK2QuUTZ9YUsbb8ufH5HwamIoAmrgLL3E',
+              'accept' => 'application/json',
+            ],
+          ]);
+
+        $tv_shows = json_decode($response->getBody(), true);
+
+        // dump($tv_shows);
+
+        return view('tvshows.show', compact('tv_shows'));
     }
 }

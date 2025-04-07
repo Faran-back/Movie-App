@@ -53,6 +53,7 @@
                 <h2 class="text-2xl font-semibold mb-5 text-gray-900 dark:text-white">Top TV Shows</h2>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     @foreach ($tvshows['results'] as $tvshow)
+                    <a href="{{ route('home.tv.show', $tvshow['id']) }}">
                         <div class="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group">
                             <img src="https://image.tmdb.org/t/p/w500{{ $tvshow['poster_path'] }}"
                                 alt="{{ $tvshow['name'] }}"
@@ -68,6 +69,7 @@
                             </div>
                         </div>
                     @endforeach
+                </a>
                 </div>
             </section>
         </div>
@@ -97,6 +99,60 @@
                 </div>
             </div>
         </section>
+
+
+        <!-- Section For Top Rated -->
+        <section class="mt-8">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <h2 class="text-2xl font-semibold mb-5 text-gray-900 dark:text-white">Top Rated</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    @foreach ($top as $t)
+                        <a href="{{ route('home.movie.show', $t['id']) }}" class="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group block">
+                            <img src="https://image.tmdb.org/t/p/w500{{ $t['poster_path'] }}"
+                                 alt="{{ $t['title'] }}"
+                                 class="w-full h-100 object-cover transition-transform duration-300 group-hover:scale-105">
+
+                            <div class="absolute inset-0 bg-black bg-opacity-80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4">
+                                <h4 class="text-white font-bold text-lg">{{ $t['title'] }}</h4>
+                                <div class="flex items-center text-yellow-400 mt-1">
+                                    ⭐ {{ number_format($t['vote_average'], 1) }}/10
+                                </div>
+                                <p class="text-gray-300 text-sm mt-2">
+                                    {{ Str::limit($t['overview'], 100, '...') }}
+                                </p>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+          <!-- Section For Upcoming -->
+          <section class="mt-8">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <h2 class="text-2xl font-semibold mb-5 text-gray-900 dark:text-white">Up Coming Movies</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    @foreach ($up as $u)
+                        <a href="{{ route('home.movie.show', $u['id']) }}" class="relative bg-gray-800 rounded-lg overflow-hidden shadow-lg group block">
+                            <img src="https://image.tmdb.org/t/p/w500{{ $u['poster_path'] }}"
+                                 alt="{{ $u['title'] }}"
+                                 class="w-full h-100 object-cover transition-transform duration-300 group-hover:scale-105">
+
+                            <div class="absolute inset-0 bg-black bg-opacity-80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4">
+                                <h4 class="text-white font-bold text-lg">{{ $u['title'] }}</h4>
+                                <div class="flex items-center text-yellow-400 mt-1">
+                                    ⭐ {{ number_format($t['vote_average'], 1) }}/10
+                                </div>
+                                <p class="text-gray-300 text-sm mt-2">
+                                    {{ Str::limit($t['overview'], 100, '...') }}
+                                </p>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
 
     </div>
 </x-app-layout>
